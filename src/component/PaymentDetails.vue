@@ -26,7 +26,7 @@
         </div>
         <div class="flex justify-between">
           <span class="text-gray-500 font-medium">User</span>
-          <span class="text-gray-900 font-semibold">{{ payment.user }}</span>
+          <span class="text-gray-900 font-semibold">{{ store.getters.getUserByPaymentId(payment.id)?.name  }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-500 font-medium">Amount</span>

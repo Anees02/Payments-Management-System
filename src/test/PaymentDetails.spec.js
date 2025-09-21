@@ -3,38 +3,41 @@ import PaymentDetails from '../component/PaymentDetails.vue'
 import { createStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
 import { nextTick } from 'vue'
-
-// Dummy component for route targets
-const Dummy = { template: '<div></div>' }
-
-const router = createRouter({
+const mockRouter = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/payments', component: Dummy },
+    { path: '/payments', component: { template: '<div></div>' } },
     { path: '/payments/:id', component: PaymentDetails },
   ],
 })
 
-// Mock store
-const store = createStore({
+
+const mockStore = createStore({
   getters: {
     getPaymentById: () => () => ({
       id: 1,
       amount: 100,
-      description: 'Test Payment'
+      description: 'Test Payment',
+      status: 'Pending',
+      userId: 1,
+      user: 'Test User'
     }),
+    getUserByPaymentId: () => (id) => ({
+      id: 1,
+      name: 'Test User',
+      phone: '1234567890'
+    })
   },
 })
 
 describe('PaymentDetails.vue', () => {
   it('goBack method redirects to /payments', async () => {
-    // Set the initial route before mounting
-    router.push('/payments/1')
-    await router.isReady()
+    mockRouter.push('/payments/1')
+    await mockRouter.isReady()
 
     const wrapper = mount(PaymentDetails, {
       global: {
-        plugins: [router, store],
+        plugins: [mockRouter, mockStore],
       },
     })
 

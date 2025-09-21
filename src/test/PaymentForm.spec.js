@@ -3,7 +3,7 @@ import PaymentForm from '../component/PaymentForm.vue'
 import { createStore } from 'vuex'
 import { createRouter, createWebHistory } from 'vue-router'
 
-const store = createStore({
+const mockStore = createStore({
   state() {
     return { payments: [] }
   },
@@ -15,7 +15,7 @@ const store = createStore({
   }
 })
 
-const router = createRouter({
+const mockRouter = createRouter({
   history: createWebHistory(),
   routes: []
 })
@@ -24,7 +24,7 @@ describe('PaymentForm.vue', () => {
   it('renders correctly', async () => {
     const wrapper = mount(PaymentForm, {
       global: {
-        plugins: [store, router]
+        plugins: [mockStore, mockRouter]
       }
     })
     expect(wrapper.text()).toContain('New Payment')
@@ -32,7 +32,7 @@ describe('PaymentForm.vue', () => {
 
   it('updates form data when input changes', async () => {
     const wrapper = mount(PaymentForm, {
-      global: { plugins: [store, router] }
+      global: { plugins: [mockStore, mockRouter] }
     })
     const amountInput = wrapper.find('input[type="number"]')
     await amountInput.setValue(500)

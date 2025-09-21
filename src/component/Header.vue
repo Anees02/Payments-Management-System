@@ -1,10 +1,10 @@
 <template>
   <header class="fixed top-0 left-0 right-0  z-100 bg-blue-600 text-white shadow-md h-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex items-center h-full justify-between">
-      <!-- Dashboard Title -->
+      
       <div class="text-2xl font-bold">Fintech Dashboard</div>
 
-      <!-- Navigation / Icons -->
+      
       <nav class="flex gap-6 items-center">
         <router-link
           to="/users"

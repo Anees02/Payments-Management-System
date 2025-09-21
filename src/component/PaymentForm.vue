@@ -7,6 +7,7 @@
 
       <form @submit.prevent="handleSubmit" class="space-y-5">
 
+        <!-- User ID -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">User ID</label>
           <input
@@ -60,16 +61,14 @@
           </select>
         </div>
 
-        <!-- Status -->
-        <div v-if="isEditMode">
+        <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
           <select
             v-model="form.status"
             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             required
           >
-            <option value="">-- Select Status --</option>
-            <option value="Success">Success</option>
+            <option value="Completed">Completed</option>
             <option value="Pending">Pending</option>
             <option value="Failed">Failed</option>
           </select>
@@ -128,58 +127,50 @@ const router = useRouter()
 const route = useRoute()
 const store = useStore()
 
+const isEditMode = ref(false)
+
 const form = ref({
   id: "",
-  userId: "",  // <-- added for user ID input
+  userId: "",
   user: "",
   amount: null,
   category: "",
   status: "Pending",
   date: "",
-  method: "",
-  notes: ""
+  method: ""
 })
-
-const isEditMode = ref(false)
 
 onMounted(() => {
   const paymentId = route.params.id
   if (paymentId) {
     isEditMode.value = true
     const existing = store.getters.getPaymentById(paymentId)
-    if (existing) form.value = { ...existing }
+    if (existing) {
+      Object.assign(form.value, existing)
+      fillUserName()
+    }
+    form.value.status = existing.status || "Pending"
   }
 })
 
 function fillUserName() {
-  if (!form.value.userId) {
-    form.value.user = ""
-    return
-  }
-
   const user = store.getters.getUserById(form.value.userId)
-  form.value.user = user ? user.name : "User not found"
+  form.value.user = user ? user.name : ""
 }
 
 function handleSubmit() {
   if (isEditMode.value) {
-    store.dispatch("updatePayment", form.value)
-    alert(`Payment ${form.value.id} updated successfully!`)
+    store.dispatch("updatePayment", { ...form.value })
+    alert(`Payment ${form.value.id} updated!`)
   } else {
-    // Auto-generate payment ID
-    const maxId = store.state.payments.length
-      ? Math.max(...store.state.payments.map(p => p.id))
-      : 0
-    form.value.id = maxId + 1
-
-    
-
-    store.dispatch("addPayment", form.value)
-    alert("New payment created successfully!")
+    form.value.id = store.state.payments.length
+      ? Math.max(...store.state.payments.map(p => p.id)) + 1
+      : 1
+    store.dispatch("addPayment", { ...form.value })
+    alert("New payment created!")
   }
   router.push("/payments")
 }
-
 
 function cancel() {
   router.push("/payments")
